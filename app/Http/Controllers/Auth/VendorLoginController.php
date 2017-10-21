@@ -42,7 +42,7 @@ class VendorLoginController extends Controller
     {
         Auth::guard('vendor')->logout();
  
-        return redirect('/');
+        return redirect('vendor/login');
     }
 
 }

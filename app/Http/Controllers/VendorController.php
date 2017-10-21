@@ -109,15 +109,15 @@ class VendorController extends Controller
     public function submit_profile_edit(Request $request)
     {
         // validates vendors input
-        $request->validate([
-            'name' => 'required',
-            'photolab_name' => 'required',
-            'email' => 'required',
-            'phone_number' => 'required',
-            'address' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-        ]);
+        // $request->validate([
+        //     'name' => 'required',
+        //     'photolab_name' => 'required',
+        //     'email' => 'required',
+        //     'phone_number' => 'required',
+        //     'address' => 'required',
+        //     'city' => 'required',
+        //     'state' => 'required',
+        // ]);
 
         // gets the id of the signed in vendor
         $id = Auth::id();
@@ -217,8 +217,6 @@ class VendorController extends Controller
 
 
 
-        // return response()->json($response);
-
     }
 
 
@@ -249,40 +247,31 @@ class VendorController extends Controller
         $id = Auth::id();
 
 
-        $new_covers = $request->new_covers;
+        $new_covers = $request->new_cover;
 
-        // variable to store new cover types
-        $covers = [];
-
-        // Puts all the new cover types in a simple array
-        for ($i=0, $a = count($new_covers); $i < $a; $i++) 
-        { 
-            if ($new_covers[$i]['name'] == 'new_cover')
-            {
-                $covers[] = $new_covers[$i]['value'];
-            }
-        }
 
         // Gets d ids of all sizes from the sizes table
         $sizes = DB::table('sizes')->pluck('id');
 
         
         // checks if cover type exist for the vendor
-        for ($i=0, $a = count($covers); $i < $a ; $i++) 
+        for ($i=0, $a = count($new_covers); $i < $a ; $i++) 
         { 
             // Checks if cover exist in cover table 
             // returns null when it does not exist
-            $table_cover = Cover::where([ ['cover_type', '=', $covers[$i]], ['vendor_id', '=', $id] ])->first();
+            $table_cover = Cover::where([ ['cover_type', '=', $new_covers[$i]], ['vendor_id', '=', $id] ])->first();
             if ($table_cover === null) 
             {
                // Creates a new entries for all cover sizes for a particular cover type on the covers table  
                 for ($j=0, $b = count($sizes); $j < $b; $j++) 
                 { 
-                    $new_cover = Cover::create([ 'cover_type' => $covers[$i], 'vendor_id' => $id, 'size_id' => $sizes[$j] ]);
+                    $new_cover = Cover::create([ 'cover_type' => $new_covers[$i], 'vendor_id' => $id, 'size_id' => $sizes[$j] ]);
                 }
             }
         }
-                
+        
+
+        return $this->vendor_covers();   
     }
 
 
@@ -365,7 +354,7 @@ class VendorController extends Controller
 
 
     // edit paper prices
-    public function papers()
+    public function vendor_papers()
     {
         // gets the id of the signed in vendor
         $id = Auth::id();
@@ -375,20 +364,19 @@ class VendorController extends Controller
             DB::table('paper_prices')
                 ->join('paper_types', 'paper_types.id', '=', 'paper_prices.paper_type_id')
                 ->where('vendor_id', $id)
-                ->pluck('paper_type.name');
+                ->pluck('paper_types.name');
 
 
-        $vendor_paper_types = array_unique($paper_types->toArray());
+        $vendor_paper_types = array_unique($vendor_paper_types->toArray());
 
         $paper_types = 
             DB::table('paper_types')
                 ->select('id', 'name')
-                ->where('vendor_id', $id)
                 ->get();
 
 
         
-        return view('vendor.papers', compact('vendor_paper_types', 'paper_types'));
+        return view('vendor.papers', compact('vendor_paper_types', 'paper_types') );
 
     }
 
@@ -401,33 +389,31 @@ class VendorController extends Controller
         $id = Auth::id();
 
         // gets all the input from form
-        $form_inputs = $request->all();
+        $form_inputs = $request->paper_types;
 
 
         // Gets d ids of all sizes from the sizes table
         $sizes = DB::table('sizes')->pluck('id');
 
         // iterates through each 
-        foreach ($form_inputs as $key => $value) 
+        for ($i=0, $j = count($form_inputs); $i < $j ; $i++)
         {
-            if ($key != '_token')
+
+            // checks the paper_prices table if there is any entry of that particular paper type
+            $vendor_paper_price = PaperPrice::where([ ['paper_type_id', '=', $form_inputs[$i] ], ['vendor_id', '=', $id] ])->first();
+            if ($vendor_paper_price === null) 
             {
-                // checks the paper_prices table if there is any entry of that particular paper type
-                $vendor_paper_price = PaperPrice::where([ ['paper_type_id', '=', $value], ['vendor_id', '=', $id] ])->first();
-                if ($vendor_paper_price === null) 
-                {
-                   // Creates a new entries for all sizes for a particular paper type on the paper_prices table  
-                    for ($j=0, $b = count($sizes); $j < $b; $j++) 
-                    { 
-                        $new_cover = PaperPrice::create([ 'paper_type_id' => $value, 'vendor_id' => $id, 'size_id' => $sizes[$j] ]);
-                    }
+               // Creates a new entries for all sizes for a particular paper type on the paper_prices table  
+                for ($k=0, $b = count($sizes); $k < $b; $k++) 
+                { 
+                    $new_cover = PaperPrice::create([ 'paper_type_id' => $form_inputs[$i], 'vendor_id' => $id, 'size_id' => $sizes[$k] ]);
                 }
             }
         }
 
 
 
-        return $this->papers();
+        return $this->vendor_papers();
 
     }
     
@@ -449,7 +435,7 @@ class VendorController extends Controller
 
 
         // removes all duplicate cover types
-        $paper_types = array_unique($cover_types->toArray());
+        $paper_types = array_unique($paper_types->toArray());
 
 
         // get paper type size details
@@ -483,7 +469,7 @@ class VendorController extends Controller
 
 
         // removes all duplicate cover types
-        $paper_types = array_unique($cover_types->toArray());
+        $paper_types = array_unique($paper_types->toArray());
 
 
         // get paper type size details

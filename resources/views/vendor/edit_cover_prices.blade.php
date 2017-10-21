@@ -1,42 +1,31 @@
-@extends('layouts.app')
+@extends('layouts.vendor_app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Vendor Dashboard</div>
 
-                <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
+<form action="{{ route('vendor.covers.prices.edit.submit') }}" method="post">
+    {{csrf_field() }}
+    @foreach ($cover_types as $cover_type)
+    <!-- PANEL HEADLINE -->
+    <div class="panel panel-headline">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ $cover_type }}</h3>
+        </div>
+        <div class="panel-body">
+            @foreach ($covers as $cover)
+                @if ( $cover->cover_type == $cover_type )
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>{{ $cover->size }}</label>
+                            <input type="text" class="form-control" name="{{ $cover->id }}" value="{{ $cover->price }}">
                         </div>
-                    @endif
-
-                    <form action="{{ route('vendor.covers.prices.edit.submit') }}" method="post">
-                        {{csrf_field() }}
-                    @foreach ($cover_types as $cover_type)
-                        <fieldset>
-                            <legend>{{ $cover_type }}</legend>
-
-                            @foreach ($covers as $cover)
-                                @if ( $cover->cover_type == $cover_type )
-                                    <label>{{ $cover->size }}</label>
-                                    <input type="text" name="{{ $cover->id }}" value="{{ $cover->price }}">
-                                @endif
-                            @endforeach
-                            
-                        </fieldset>
-                    @endforeach
-                        <button class="btn btn-default" type="submit">Submit</button>
-                    </form>
-               
-
-                    
-                </div>
-            </div>
+                    </div>
+                @endif
+            @endforeach
         </div>
     </div>
-</div>
+    <!-- END OF PANEL HEADLINE -->
+@endforeach
+    <button class="btn btn-default" type="submit">Submit</button>
+</form>
+
 @endsection

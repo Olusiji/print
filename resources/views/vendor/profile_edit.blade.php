@@ -1,51 +1,77 @@
-@extends('layouts.app')
+@extends('layouts.vendor_app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Vendor Dashboard</div>
 
-                <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
+<div class="panel panel-headline">
+    <div class="panel-heading">
+        <h3 class="panel-title">Edit Profile</h3>
+        <p class="panel-subtitle"></p>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-9">
+                <form action="{{ route('vendor.profile.edit.submit') }}" method="post">
+                    {{csrf_field() }}
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label>Photolab Name</label>
+                                <input type="text" class="form-control" name="photolab_name" value="{{ $vendor->photolab_name}}">
+                            </div>
                         </div>
-                    @endif
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" class="form-control" name="email" value="{{ $vendor->email}}">
+                            </div>
+                        </div>
+                    </div>
 
-                    <form action="{{ route('vendor.profile.edit.submit') }}" method="post">
-                        {{csrf_field() }}
-                        
-                        <label>Name</label>
-                        <input type="text" name="name" value="{{ $vendor->name}}">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" class="form-control" name="name" value="{{ $vendor->name}}">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="text" class="form-control" name="phone_number" value="{{ $vendor->phone_number}}">
+                            </div>
+                        </div>
+                    </div>
 
-                        <label>Photolab Name</label>
-                        <input type="text" name="photolab_name" value="{{ $vendor->photolab_name}}">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" class="form-control" name="address" value="{{ $vendor->address}}">
+                            </div>
+                        </div>
+                    </div>
 
-                        <label>Email</label>
-                        <input type="email" name="email" value="{{ $vendor->email}}">
-
-                        <label>Phone Number</label>
-                        <input type="text" name="phone_number" value="{{ $vendor->phone_number}}">
-
-                        <label>Address</label>
-                        <input type="text" name="address" value="{{ $vendor->address}}">
-
-                        <label>City</label>
-                        <input type="text" name="city" value="{{ $vendor->city}}">
-
-                        <label>State</label>
-                        <input type="text" name="state" value="{{ $vendor->state}}">
-
-                        <button class="btn btn-default" type="submit">Submit</button>
-                    </form>
-               
-
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" class="form-control" name="city" value="{{ $vendor->city}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>State</label>
+                                <input type="email" class="form-control" name="state" value="{{ $vendor->state}}">
+                            </div>
+                        </div>
+                    </div>
                     
-                </div>
+                    <button class="btn btn-default" type="submit">Update Profile</button>
+
+                </form>
             </div>
         </div>
     </div>
 </div>
+
 @endsection
