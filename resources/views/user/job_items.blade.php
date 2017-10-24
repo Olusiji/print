@@ -1,4 +1,4 @@
-@extends('layouts.vendor_app')
+@extends('layouts.user_app')
 
 @section('title', 'Job Items')
 
@@ -38,7 +38,7 @@
                                     <td>{{ $job_item->no_of_sheets }}</td>
                                     <td>{{ $job_item->lamination }}</td>
                                     <td>{{ $job_item->packaging_type }}</td>
-                                    <td><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i>  Download files</a></td>
+                                    <td><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i>  Upload file(s)</a></td>
                                 </tr>                
                             @endforeach
                     </tbody>

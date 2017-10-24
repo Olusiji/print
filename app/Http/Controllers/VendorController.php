@@ -9,12 +9,13 @@ use App\Cover;
 use App\Vendor;
 use App\Size;
 use App\PaperPrice;
+use App\PaperType;
+use App\Packaging;
 
 class VendorController extends Controller
 {
 
 
-    var $id;
     /**
      * Create a new controller instance.
      *
@@ -23,8 +24,6 @@ class VendorController extends Controller
     public function __construct()
     {
         $this->middleware('auth:vendor');
-
-        $this->id = Auth::id();
     }
 
     /**
@@ -37,6 +36,10 @@ class VendorController extends Controller
         return view('vendor.vendor');
     }
 
+
+    /**
+     * Show the all vendor jobs.
+     */
     public function jobs()
     {
         $id = Auth::id();
@@ -44,7 +47,10 @@ class VendorController extends Controller
     	return view('vendor.jobs', ['jobs' => $jobs]);
     }
 
-    // Gets all job items for a particular job
+    
+    /**
+     * Gets all job items for a particular job.
+     */ 
     public function job_items($job_id)
     {
         // Checks if authenticated user is linked with the job ::: this may be unnecessary
@@ -70,7 +76,10 @@ class VendorController extends Controller
         }
     }
 
-    // Returns view for the vendors payment page
+    
+    /**
+     * Returns view for the vendors payment page.
+     */  
     public function payments()
     {
         $id = Auth::id();
@@ -91,14 +100,9 @@ class VendorController extends Controller
     }
 
 
-    // View profile page
-    public function profile()
-    {
-        $id = Auth::id();
-        $vendor = Vendor::find($id);
-        return view('vendor.profile', compact('vendor'));
-    }
-
+    /**
+     * Returns view for profile edit form.
+     */  
     public function profile_edit()
     {
         $id = Auth::id();
@@ -109,15 +113,15 @@ class VendorController extends Controller
     public function submit_profile_edit(Request $request)
     {
         // validates vendors input
-        // $request->validate([
+        $request->validate([
         //     'name' => 'required',
         //     'photolab_name' => 'required',
-        //     'email' => 'required',
+             'email' => 'required',
         //     'phone_number' => 'required',
         //     'address' => 'required',
         //     'city' => 'required',
         //     'state' => 'required',
-        // ]);
+        ]);
 
         // gets the id of the signed in vendor
         $id = Auth::id();
@@ -136,8 +140,8 @@ class VendorController extends Controller
             'state' => $request->input('state')
         ]);  
 
-        // returns profile page
-        return view('vendor.profile', compact('vendor'));
+        // returns edit profile page
+        return view('vendor.profile_edit', compact('vendor'));
     }
 
 
@@ -220,8 +224,11 @@ class VendorController extends Controller
     }
 
 
-    // vendor views all covers he currently offers and can add new ones
-    // need to add delete cover method should probably use ajax
+    
+    /**
+     * vendor views all covers he currently offers and can add new ones.
+     *
+     */
     public function vendor_covers()
     {
         // gets the id of the signed in vendor
@@ -239,7 +246,10 @@ class VendorController extends Controller
         
     }
 
-    // Adds new cover typr for a vendor
+    /**
+     * Adds new cover type for a vendor.
+     *
+     */
     public function add_new_cover(Request $request)
     {
 
@@ -275,7 +285,30 @@ class VendorController extends Controller
     }
 
 
-    // view current cover prices
+    /**
+     *  delete cover type
+     *
+     */
+    public function delete_cover(Request $request)
+    {
+        $id = Auth::id();
+
+        $cover = $request->cover;
+
+        // deletes cover type 
+        $deleted_cover = Cover::where('cover_type', $cover)
+                            ->where('vendor_id', $id)
+                            ->delete();
+
+        return $cover;
+    }
+
+
+
+    /**
+     * view current cover prices
+     *
+     */
     public function view_cover_prices()
     {
         // Gets the id of logged in vendor
@@ -300,7 +333,10 @@ class VendorController extends Controller
     }
 
 
-    // form to edit cover prices
+    /**
+     * form to edit cover prices
+     *
+     */
     public function cover_prices_form()
     {
         // Gets the id of logged in vendor
@@ -330,7 +366,10 @@ class VendorController extends Controller
 
 
    
-    // method to process input from cover prices form
+    /**
+     * process input from cover prices form
+     *
+     */
     public function submit_cover_prices_form(Request $request)
     {
         $id = Auth::id();
@@ -348,12 +387,15 @@ class VendorController extends Controller
             }
         }
 
-        return $this->view_cover_prices();
+        return $this->cover_prices_form();
     }
 
 
 
-    // edit paper prices
+    /**
+     * edit paper prices
+     *
+     */
     public function vendor_papers()
     {
         // gets the id of the signed in vendor
@@ -373,18 +415,18 @@ class VendorController extends Controller
             DB::table('paper_types')
                 ->select('id', 'name')
                 ->get();
-
-
         
         return view('vendor.papers', compact('vendor_paper_types', 'paper_types') );
 
     }
 
 
-    // process added paper types from form
+    /**
+     * process added paper types from form
+     *
+     */ 
     public function add_new_paper(Request $request)
     {
-
         // gets the id of the signed in vendor
         $id = Auth::id();
 
@@ -419,7 +461,33 @@ class VendorController extends Controller
     
 
 
-    // view paper prices
+    /**
+     * delete cover type
+     *
+     */ 
+    public function delete_paper(Request $request)
+    {
+        $id = Auth::id();
+
+        $paper = $request->paper;
+
+        // get paper type id
+        $paper_type_id = PaperType::where('name', $paper)->value('id');
+
+
+        // deletes cover type 
+        $deleted_cover = PaperPrice::where('paper_type_id', $paper_type_id)
+                            ->where('vendor_id', $id)
+                            ->delete();
+
+        return $paper;
+    }
+
+
+    /**
+     * view paper prices
+     *
+     */ 
     public function view_paper_prices()
     {
         // Gets the id of logged in vendor
@@ -430,9 +498,6 @@ class VendorController extends Controller
                             ->join('paper_types', 'paper_types.id', '=', 'paper_prices.paper_type_id')
                             ->where('vendor_id', '=', $id)
                             ->pluck('paper_types.name');
-
-
-
 
         // removes all duplicate cover types
         $paper_types = array_unique($paper_types->toArray());
@@ -453,7 +518,10 @@ class VendorController extends Controller
 
 
 
-    // form to edit paper prices
+    /**
+     * form to edit paper prices
+     *
+     */
     public function paper_prices_form()
     {
         // Gets the id of logged in vendor
@@ -464,9 +532,6 @@ class VendorController extends Controller
                             ->join('paper_types', 'paper_types.id', '=', 'paper_prices.paper_type_id')
                             ->where('vendor_id', '=', $id)
                             ->pluck('paper_types.name');
-
-
-
 
         // removes all duplicate cover types
         $paper_types = array_unique($paper_types->toArray());
@@ -480,12 +545,13 @@ class VendorController extends Controller
                         ->where('vendor_id', '=', $id)
                         ->get();
 
-
-
         return view('vendor.edit_paper_prices', compact('paper_types', 'paper_prices') );
     }
 
-
+    /**
+     * process paper price form input
+     *
+     */
     public function submit_paper_prices_form()
     {
         //
@@ -507,6 +573,127 @@ class VendorController extends Controller
         return $this->view_paper_prices();
 
     }
+
+
+    /**
+     * vendor views all covers he currently offers and can add new ones
+     *
+     */
+    public function vendor_packagings()
+    {
+        // gets the id of the signed in vendor
+        $id = Auth::id();
+
+        // 
+        $packaging_types = Packaging::where('vendor_id', $id)
+                            ->pluck('type');
+
+        
+        return view('vendor.packagings', compact('packaging_types'));
+        
+    }
+
+    /**
+     *  Adds new cover typr for a vendor
+     *
+     */
+    public function add_new_packaging(Request $request)
+    {
+
+        // gets the id of the signed in vendor
+        $id = Auth::id();
+
+
+        $new_packaging_type = $request->new_packaging;
+
+        
+        // checks if cover type exist for the vendor
+        for ($i=0, $a = count($new_packaging_type); $i < $a ; $i++) 
+        { 
+            // checks if packaging type exist for a vendor and create new a new model if none exists
+            $packaging = Packaging::firstOrCreate(['type' => $new_packaging_type[$i], 'vendor_id' => $id]);
+        }
+        
+
+        return $this->vendor_packagings();   
+    }
+
+
+    /**
+     *  delete cover type
+     *
+     */
+    public function delete_packaging(Request $request)
+    {
+        $id = Auth::id();
+
+        $packaging = $request->packaging;
+
+        // deletes cover type 
+        $deleted_cover = Packaging::where('type', $packaging)
+                            ->where('vendor_id', $id)
+                            ->delete();
+
+        return $packaging;
+    }
+
+
+
+    /**
+     *  form to edit cover prices.
+     *
+     */ 
+    public function packaging_prices_form()
+    {
+        // Gets the id of logged in vendor
+        $id = Auth::id();
+
+        $packagings = Packaging::where('vendor_id', $id)
+                                ->select('type', 'price', 'id')
+                                ->get();
+
+
+        return view('vendor.edit_packaging_prices', compact('packagings'));
+    }
+
+
+   
+    /**
+     *  method to process input from cover prices form.
+     *
+     */ 
+    public function submit_packaging_prices_form(Request $request)
+    {
+        $id = Auth::id();
+
+        $form_inputs = $request->all();
+
+
+        foreach ($form_inputs as $key => $value) 
+        {
+            if ($key != '_token')
+            {
+                Packaging::where('id', $key)
+                    ->where('vendor_id', $id)
+                    ->update(['price' => $value]);
+            }
+        }
+
+        return $this->packaging_prices_form();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

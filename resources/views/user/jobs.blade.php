@@ -1,4 +1,4 @@
-@extends('layouts.vendor_app')
+@extends('layouts.user_app')
 
 @section('title', 'Jobs')
 
@@ -18,13 +18,15 @@
             </div>
             <div class="panel-body">
                 @if (count($jobs) == 0)
-                    <p>You have not gotten any job yet</p>
+                    <p>You don't have any Job</p>
                 @else
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <td>Job Name</td>
-                                <td>Total Cost</td>
+                                <td>Address</td>
+                                <td>Job Cost</td>
+                                <td>Shipping Cost</td>
                                 <td>Order Date</td>
                                 <td>Job Details</td>
                             </tr>  
@@ -33,9 +35,11 @@
                             @foreach ($jobs as $job)   
                                 <tr>
                                     <td>{{ $job->job_name }}</td>
+                                    <td>{{ $job->delivery_address }}</td>
                                     <td>{{ $job->cost }}</td>
+                                    <td>{{ $job->shipping_cost }}</td>
                                     <td>{{ $job->created_at }}</td>
-                                    <td><a href="{{ route("vendor.job_items", ['id' => $job->id]) }}">View job details</a></td>
+                                    <td><a href="{{ route("user.job_items", ['id' => $job->id]) }}">View job details</a></td>
                                 </tr>                
                             @endforeach
                         </tbody>

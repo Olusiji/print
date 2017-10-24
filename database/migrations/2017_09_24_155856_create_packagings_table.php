@@ -17,7 +17,7 @@ class CreatePackagingsTable extends Migration
             $table->increments('id');
             $table->integer('vendor_id');
             $table->string('type');
-            $table->float('price', 8, 2);
+            $table->float('price', 8, 2)->nullable();
             $table->timestamps();
         });
     }

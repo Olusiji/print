@@ -1,5 +1,9 @@
 @extends('layouts.vendor_app')
 
+@section('pricing_nav_class', 'active')
+
+@section('title', 'Covers')
+
 @section('content')
 
 
@@ -13,9 +17,9 @@
     <div class="panel-body">
         <div class="row">
             @foreach ($cover_types as $cover_type)
-                <div class="col-md-3" ">
+                <div class="col-md-3 cover_type">
                     <div class="metric" >
-                        <span class="number">{{ $cover_type }}</span><p></p>
+                        <span class="number">{{ $cover_type }}</span><p><button type="button" value ="{{ $cover_type }}" class="glyphicon glyphicon-remove delete_cover"></button></p>
                     </div>
                 </div>
             @endforeach

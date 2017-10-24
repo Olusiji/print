@@ -2,7 +2,7 @@
 <html lang="{{ app()->getLocale() }}">
 
 <head>
-	<title>Vendor Dashboard | @yield('title')</title>
+	<title>Dashboard | @yield('title')</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -50,13 +50,13 @@
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
 							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>{{Auth::user()->photolab_name}}</span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>{{Auth::user()->studio_name}}</span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
 								<ul class="dropdown-menu">
-									<li><a href="{{ route('vendor.profile.edit') }}"><i class="lnr lnr-user"></i> <span>My Profile</span></a></li>
-									<li><a href="{{ route('vendor.logout') }}"
+									<li><a href="{{ route('user.profile.edit') }}"><i class="lnr lnr-user"></i> <span>My Profile</span></a></li>
+									<li><a href="{{ route('logout') }}"
 	                                            onclick="event.preventDefault();
 	                                                     document.getElementById('logout-form').submit();"><i class="lnr lnr-exit"></i> <span>Logout</span></a>
-	                                                     <form id="logout-form" action="{{ route('vendor.logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
+	                                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">{{ csrf_field() }}</form>
 	                                </li>
 								</ul>
 							</li>
@@ -71,20 +71,8 @@
 			<div class="sidebar-scroll">
 				<nav>
 					<ul class="nav">
-						<li><a href="{{ route('vendor.dashboard') }}" class="@yield('dashboard_nav_class')"><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-						<li><a href="{{ route('vendor.jobs') }}" class="@yield('jobs_nav_class')"><i class="lnr lnr-briefcase"></i> <span>Jobs</span></a></li>
-						<li><a href="{{ route('vendor.profile.edit') }}" class="@yield('profile_nav_class')"><i class="lnr lnr-user"></i> <span>Profile</span></a></li>
-						<li><a href="{{ route('vendor.payments') }}" class="@yield('payments_nav_class')"><i class="lnr lnr-user"></i> <span>Payments</span></a></li>
-						<li>
-							<a href="#subPages" data-toggle="collapse" class="collapsed" id="@yield('pricing_nav_class')"><i class="lnr lnr-file-empty"></i> <span>Pricing</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-							<div id="subPages" class="collapse ">
-								<ul class="nav">
-									<li><a href="{{ route('vendor.covers') }}" class="">Covers</a></li>
-									<li><a href="{{ route('vendor.papers') }}" class="">Papers</a></li>
-									<li><a href="{{ route('vendor.packagings') }}" class="">Packaging</a></li>
-								</ul>
-							</div>
-						</li>
+						<li><a href="{{ route('user.profile.edit') }}" class="@yield('profile_nav_class')"><i class="lnr lnr-user"></i> <span>Profile</span></a></li>
+						<li><a href="{{ route('user.jobs') }}" class="@yield('jobs_nav_class')"><i class="lnr lnr-briefcase"></i> <span>Jobs</span></a></li>
 					</ul>
 				</nav>
 			</div>
@@ -122,7 +110,6 @@
 
 	<!-- CUSTOM PRINTSHOP JS  -->
 	<script src="{{ asset('js/printshop.js') }}"></script>
-	
 </body>
 
 </html>

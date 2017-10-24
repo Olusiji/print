@@ -1,5 +1,9 @@
 @extends('layouts.vendor_app')
 
+@section('title', 'Cover Prices')
+
+@section('pricing_nav_class', 'active')
+
 @section('content')
 
 <form action="{{ route('vendor.covers.prices.edit.submit') }}" method="post">

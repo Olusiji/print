@@ -1,5 +1,9 @@
 @extends('layouts.vendor_app')
 
+@section('dashboard_nav_class', 'active')
+
+@section('title', 'Home')
+
 @section('content')
 
 <!-- OVERVIEW -->

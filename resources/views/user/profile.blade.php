@@ -1,4 +1,4 @@
-@extends('layouts.vendor_app')
+@extends('layouts.user_app')
 
 @section('title', 'Profile')
 
@@ -14,19 +14,19 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-md-9">
-                <form action="{{ route('vendor.profile.edit.submit') }}" method="post">
+                <form action="{{ route('user.profile.edit.submit') }}" method="post">
                     {{csrf_field() }}
                     <div class="row">
                         <div class="col-md-7">
                             <div class="form-group">
-                                <label>Photolab Name</label>
-                                <input type="text" class="form-control" name="photolab_name" value="{{ $vendor->photolab_name}}">
+                                <label>Studio Name</label>
+                                <input type="text" class="form-control" name="studio_name" value="{{ $user->studio_name}}">
                             </div>
                         </div>
                         <div class="col-md-5">
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="email" class="form-control" name="email" value="{{ $vendor->email}}">
+                                <input type="email" class="form-control" name="email" value="{{ $user->email}}">
                             </div>
                         </div>
                     </div>
@@ -35,13 +35,13 @@
                         <div class="col-md-7">
                             <div class="form-group">
                                 <label>Name</label>
-                                <input type="text" class="form-control" name="name" value="{{ $vendor->name}}">
+                                <input type="text" class="form-control" name="name" value="{{ $user->name}}">
                             </div>
                         </div>
                         <div class="col-md-5">
                             <div class="form-group">
                                 <label>Phone Number</label>
-                                <input type="text" class="form-control" name="phone_number" value="{{ $vendor->phone_number}}">
+                                <input type="text" class="form-control" name="phone_number" value="{{ $user->phone_number}}">
                             </div>
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Address</label>
-                                <input type="text" class="form-control" name="address" value="{{ $vendor->address}}">
+                                <input type="text" class="form-control" name="address" value="{{ $user->address}}">
                             </div>
                         </div>
                     </div>
@@ -59,13 +59,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>City</label>
-                                <input type="text" class="form-control" name="city" value="{{ $vendor->city}}">
+                                <input type="text" class="form-control" name="city" value="{{ $user->city}}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>State</label>
-                                <input type="email" class="form-control" name="state" value="{{ $vendor->state}}">
+                                <input type="email" class="form-control" name="state" value="{{ $user->state}}">
                             </div>
                         </div>
                     </div>

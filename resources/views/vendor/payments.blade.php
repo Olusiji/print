@@ -1,8 +1,10 @@
 @extends('layouts.vendor_app')
 
+@section('title', 'Packaging Prices')
+
+@section('payments_nav_class', 'active')
+
 @section('content')
-
-
 
 
 <div class="row">

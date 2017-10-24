@@ -1,5 +1,9 @@
 @extends('layouts.vendor_app')
 
+@section('pricing_nav_class', 'active')
+
+@section('title', 'Paper')
+
 @section('content')
 
 <!-- PANEL HEADLINE -->
@@ -11,9 +15,9 @@
     <div class="panel-body">
         <div class="row">
             @foreach ($vendor_paper_types as $vendor_paper_type)
-                <div class="col-md-3" ">
+                <div class="col-md-3 paper_type">
                     <div class="metric" >
-                        <span class="number">{{ $vendor_paper_type }}</span><p></p>
+                        <span class="number">{{ $vendor_paper_type }}</span><p><button type="button" value ="{{ $vendor_paper_type }}" class="glyphicon glyphicon-remove delete_paper"></button></p>
                     </div>
                 </div>
             @endforeach

@@ -17,23 +17,37 @@ Route::get('/', function() {
 });
  
 
-// User Account routes 
-Route::group(['prefix' => 'account/{studio_name}'], function() {
-	Route::get('/', 'JobController@index');
-	Route::get('orders', 'JobController@index');
-	Route::get('edit_profile', 'JobController@index');
-});
 
 Route::get('new_job', 'JobController@new_job');
+
+// Route to upload
+Route::post('upload', 'JobController@upload')->name('file_upload');
+
+// Route to download
+Route::get('download', 'JobController@downlaod')->name('file_download');
+
 
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('user/logout', 'Auth\LoginController@userLogout')->name('user.logout');
 
 
-// Vendor routes
+/**
+ * User Account routes 
+ */
+Route::prefix('user')->group(function() {
+	Route::get('jobs', 'UserController@jobs')->name('user.jobs');
+	Route::get('jobs/{id}', 'UserController@job_items')->name('user.job_items');
+	Route::get('profile', 'UserController@profile_edit')->name('user.profile.edit');
+	Route::post('profile', 'UserController@submit_profile_edit')->name('user.profile.edit.submit');
+	Route::get('logout', 'Auth\LoginController@userLogout')->name('user.logout');
+});
+
+
+/**
+ * Vendor Account routes 
+ */
 Route::prefix('vendor')->group(function() {
 
 	// Authentication routes 
@@ -48,14 +62,12 @@ Route::prefix('vendor')->group(function() {
 	Route::get('jobs', 'VendorController@jobs')->name('vendor.jobs');
 	Route::get('job/{id}', 'VendorController@job_items')->name('vendor.job_items');
 
-
 	// Payment route
 	Route::get('payments', 'VendorController@payments')->name('vendor.payments');
 
 	// Profile routees
-	Route::get('profile', 'VendorController@profile')->name('vendor.profile');
-	Route::get('profile/edit', 'VendorController@profile_edit')->name('vendor.profile.edit');
-	Route::post('profile/edit', 'VendorController@submit_profile_edit')->name('vendor.profile.edit.submit');
+	Route::get('profile', 'VendorController@profile_edit')->name('vendor.profile.edit');
+	Route::post('profile', 'VendorController@submit_profile_edit')->name('vendor.profile.edit.submit');
 
 
 	// Not currently using
@@ -66,28 +78,37 @@ Route::prefix('vendor')->group(function() {
 
 
 	Route::prefix('pricing')->group(function() {
-	// cover routes
-	Route::get('covers', 'VendorController@vendor_covers')->name('vendor.covers');
-	Route::post('covers/add_new', 'VendorController@add_new_cover')->name('vendor.new.covers');
-	Route::get('covers/prices', 'VendorController@view_cover_prices')->name('vendor.view.covers.prices');
-	Route::get('covers/prices/edit', 'VendorController@cover_prices_form')->name('vendor.covers.prices.edit');
-	Route::post('covers/prices/edit', 'VendorController@submit_cover_prices_form')->name('vendor.covers.prices.edit.submit');
+		
+		// cover routes
+		Route::prefix('covers')->group(function() {
 
+			Route::get('/', 'VendorController@vendor_covers')->name('vendor.covers');
+			Route::post('add_new', 'VendorController@add_new_cover')->name('vendor.new.covers');
+			Route::post('delete', 'VendorController@delete_cover')->name('vendor.covers.delete');
+			Route::get('prices', 'VendorController@view_cover_prices')->name('vendor.view.covers.prices');
+			Route::get('prices/edit', 'VendorController@cover_prices_form')->name('vendor.covers.prices.edit');
+			Route::post('prices/edit', 'VendorController@submit_cover_prices_form')->name('vendor.covers.prices.edit.submit');
+		});
 
-	// paper routes
-	Route::get('papers', 'VendorController@vendor_papers')->name('vendor.papers');
-	Route::post('papers/add_new', 'VendorController@add_new_paper')->name('vendor.papers.add_new');
-	Route::get('papers/prices', 'VendorController@view_paper_prices')->name('vendor.view.papers.prices');
-	Route::get('papers/prices/edit', 'VendorController@paper_prices_form')->name('vendor.papers.prices.edit');
-	Route::post('papers/prices/edit', 'VendorController@submit_paper_prices_form')->name('vendor.papers.prices.edit.submit');
+		// paper routes
+		Route::prefix('papers')->group(function() {
+			Route::get('/', 'VendorController@vendor_papers')->name('vendor.papers');
+			Route::post('add_new', 'VendorController@add_new_paper')->name('vendor.papers.add_new');
+			Route::post('delete', 'VendorController@delete_paper')->name('vendor.papers.delete');
+			Route::get('prices', 'VendorController@view_paper_prices')->name('vendor.view.papers.prices');
+			Route::get('prices/edit', 'VendorController@paper_prices_form')->name('vendor.papers.prices.edit');
+			Route::post('prices/edit', 'VendorController@submit_paper_prices_form')->name('vendor.papers.prices.edit.submit');
+		});
+
+		// packaging routes
+		Route::prefix('packaging')->group(function() {
+			Route::get('/', 'VendorController@vendor_packagings')->name('vendor.packagings');
+			Route::post('add_new', 'VendorController@add_new_packaging')->name('vendor.packagings.add_new');
+			Route::post('delete', 'VendorController@delete_packaging')->name('vendor.packagings.delete');
+			Route::get('prices/edit', 'VendorController@packaging_prices_form')->name('vendor.packagings.prices.edit');
+			Route::post('prices/edit', 'VendorController@submit_packaging_prices_form')->name('vendor.packagings.prices.edit.submit');
+		});
 
 	});
-
 });
 
-
-// Route to upload
-Route::post('upload', 'VendorController@upload')->name('file_upload');
-
-// Route to download
-Route::get('download', 'VendorController@downlaod')->name('file_download');
